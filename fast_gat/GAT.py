@@ -10,15 +10,40 @@ class GraphAttentionHead(nn.Module):
     Currently, this implementation is slow because of the
     for loop.
     """
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim, slope=0.2):
+        super(GraphAttentionHead, self).__init__()
         self.w = nn.Linear(input_dim, output_dim)
-        self.a = nn.Linear(2*output_dim, output_dim)
+        self.a = nn.Linear(2*output_dim, 1)
+        self.activation = nn.LeakyReLU(slope)
 
     def forward(self, nodes, edges):
         nodes = self.w(nodes)
+        new_nodes = nodes
         for curr_node, neighbors in edges.items():
-            pass
-        return None # TODO!
+            neighbors.extend([curr_node]) # Don't forget self attention!
+            top_list = torch.tensor([self._get_top(nodes, curr_node, neighbor) for neighbor in neighbors])
+            new_nodes[curr_node] = self._get_new_node_info(nodes, neighbors, top_list)
+        return new_nodes
+
+    def _get_top(self, nodes, i, j):
+        """
+        Returns a scalar for the top of the a_ij function
+        nodes: Info of the nodes after the W param matrix
+        i,j: Nodes to consider
+        """
+        cat = self.a(torch.cat((nodes[i], nodes[j]), dim=-1))
+        x = torch.exp(self.activation(cat))
+        return x
+
+    def _get_new_node_info(self, nodes, neighbors, top_list):
+        """
+        nodes: List of nodes after the conv
+        neighbors: list of which nodes are the neighbors of the current one
+        top_list: list of a_ij from the function
+        """
+        bottom = torch.sum(top_list)
+        x = torch.stack([top_list[curr_neighbor_no] * nodes[curr_neighbor] for curr_neighbor_no, curr_neighbor in enumerate(neighbors)])/bottom
+        return torch.sum(x)
 
 class GraphAttentionLayer(nn.Module):
     """
@@ -28,10 +53,11 @@ class GraphAttentionLayer(nn.Module):
     size KFxF, more closely resembling the original attention paper.
     """
     def __init__(self, heads, input_dim, intermediate_dim, output_dim):
+        super(GraphAttentionLayer, self).__init__()
         self.num_heads = heads
         self.heads = nn.ModuleList()
         self.final_layer = nn.Linear(heads*intermediate_dim, output_dim)
-        for head_no in heads:
+        for head_no in range(heads):
             self.heads.extend([GraphAttentionHead(input_dim, intermediate_dim)])
 
     def forward(self, nodes, edges):
@@ -55,6 +81,7 @@ class GraphAttentionNetwork(nn.Module):
     This function just returns the nodes, as the edges are unchanged.
     """
     def __init__(self, depth, heads, input_dim, inner_dim):
+        super(GraphAttentionNetwork, self).__init__()
         self.layers = nn.ModuleList()
         if depth == 1:
             inner_dim = input_dim
