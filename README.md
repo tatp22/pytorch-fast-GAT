@@ -1,5 +1,7 @@
 # Pytorch Fast GAT Implementation
 
+![Fast GAT](./diagram/fast-gat.png)
+
 This is my implementation of an old paper, [Graph Attention Networks](https://arxiv.org/pdf/1710.10903.pdf).
 However, instead of a standard impementation, this one introduces several techniques to speed up the process,
 which are found below.
