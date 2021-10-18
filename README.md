@@ -43,3 +43,16 @@ TODO
 ## Downsampling method
 
 TODO
+
+## Citation
+
+```
+@misc{veličković2018graph,
+      title={Graph Attention Networks}, 
+      author={Petar Veličković and Guillem Cucurull and Arantxa Casanova and Adriana Romero and Pietro Liò and Yoshua Bengio},
+      year={2018},
+      eprint={1710.10903},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML}
+}
+```
