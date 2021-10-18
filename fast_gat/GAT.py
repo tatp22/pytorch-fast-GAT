@@ -1,8 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
-from torch.utils.checkpoint import checkpoint
 
 class GraphAttentionHead(nn.Module):
     """
@@ -93,7 +90,6 @@ class GraphAttentionNetwork(nn.Module):
                 self.layers.extend([GraphAttentionLayer(heads, inner_dim, inner_dim, input_dim)])
             else:
                 self.layers.extend([GraphAttentionLayer(heads, inner_dim, inner_dim, inner_dim)])
-
 
     def forward(self, nodes, edges):
         for layer in self.layers:
