@@ -16,7 +16,7 @@ Alternatively,
 
 ```
 git clone https://github.com/tatp22/pytorch-fast-GAT.git
-cd fast-gat
+cd fast_gat
 ```
 
 ## What makes this repo faster?
@@ -28,19 +28,56 @@ that depends on the number of edges, and when the graph is dense, this means tha
 Most sparsifying techniques for graphs rely on somehow decreasing the number of edges. However, I will try out
 a different method: Reducing the number of nodes in the interior representation. This will be done similarly to how
 the [Linformer](https://arxiv.org/pdf/2006.04768.pdf) decreases the memory requirement of the internal matrices, which
-is by adding a parameterized matrix to the input that transforms the input. A challenge here is that since this is a graph,
-not all nodes will connect to all other nodes. This is why I plan to introduce a masking technique, which is explained further
-down.
-(not yet implemented)
+is by adding a parameterized matrix to the input that transforms it. A challenge here is that since this is a graph,
+not all nodes will connect to all other nodes. My plan is to explore techniques to reduce the size of the graph (the
+nodes, that is), pass it into the GAT, and then upscale it back to the original size.
+
+Seeing that sparse attention has shown to perfom just as well as traditional attention, could it be the same for graphs?
+I will try some experiments and see if this is indeed the case.
+
+This is not yet implemented.
 
 Note: This idea has not been tested. I do not know what its performance will be on real life applications,
 and it may or may not provide accurate results.
 
 ## Code Example
 
-TODO
+If one wants to run this method (right now, without the downsampling) with the graph from the input diagram,
+run this code to get one forward iteration:
+
+```python
+import torch
+from fast_gat import GraphAttentionNetwork
+
+nodes = torch.tensor([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9], [1.0, 1.1, 1.2]], dtype= torch.float)
+edges = {0: [1,2], 1: [0,2,3], 2: [0,1], 3: [1]}
+
+depth = 3
+heads = 3
+input_dim = 3
+inner_dim = 2
+
+net = GraphAttentionNetwork(depth, heads, input_dim, inner_dim)
+
+output = net(nodes, edges)
+print(output)
+```
+
+A point of interest here that one may notice is that the modules assume the graph is directed and that the edges
+have already been processed such that the nodes are zero indexed.
 
 ## Downsampling method
+
+The main thing that I am experimenting with here is to somehow reduce the number of input vertices in the
+input graph while keeping the edges connected in a way that makes sense. Some things that might work:
+
+* A learned iterative process; that is, some function `f: V x V -> V` that takes two nodes and makes it into one,
+run on the graph over several iterations. This could probably just be a single learned linear layer. The challenge
+here would be keeping the same procedure for upsampling, as well as preserving the edges somehow.
+* A fixed method related to the rank of each node. That is, lets say an edge connects `v_i` and `v_j`, then by some fixed
+rule, the two are joined and then split again.
+
+The learned iterative process looks more appealing; further work will be done to look into it.
 
 TODO
 
