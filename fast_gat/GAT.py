@@ -51,7 +51,6 @@ class GraphAttentionLayer(nn.Module):
     """
     def __init__(self, heads, input_dim, intermediate_dim, output_dim):
         super(GraphAttentionLayer, self).__init__()
-        self.num_heads = heads
         self.heads = nn.ModuleList()
         self.final_layer = nn.Linear(heads*intermediate_dim, output_dim)
         for head_no in range(heads):
