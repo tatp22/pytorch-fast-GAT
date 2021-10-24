@@ -1,1 +1,2 @@
 from fast_gat.GAT import GraphAttentionNetwork
+from fast_gat.dense_gat import DenseGraphAttentionNetwork
