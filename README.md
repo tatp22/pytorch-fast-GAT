@@ -42,8 +42,12 @@ and it may or may not provide accurate results.
 
 ## Code Example
 
-If one wants to run this method (right now, without the downsampling) with the graph from the input diagram,
-run this code to get one forward iteration:
+Right now, there exist two different versions of GAT: one for sparse graphs, and one for dense graphs. The idea in
+the end is to use only the dense version, since the sparse version runs slower. It is currently not possible to use
+the dense version on very large graphs, since it creates a matrix of size `(n,n)`, which will quickly drain the
+system's memory.
+
+As an example, this is how to use the sparse version:
 
 ```python
 import torch
@@ -80,6 +84,13 @@ rule, the two are joined and then split again.
 The learned iterative process looks more appealing; further work will be done to look into it.
 
 TODO
+
+## Further work that needs to be done
+
+* Create some sort of downsampling/upsampling method
+* Create a way to switch between the dictonary edge method and the `nxn` edge method
+* Figure out how to get this to pypi
+* Optional: Create a test suite on every ci run? Could be cool to have ci/cd somehow here
 
 ## Citation
 
