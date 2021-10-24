@@ -88,7 +88,6 @@ TODO
 ## Further work that needs to be done
 
 * Create some sort of downsampling/upsampling method
-* Create a way to switch between the dictonary edge method and the `nxn` edge method
 * Figure out how to get this to pypi
 * Optional: Create a test suite on every ci run? Could be cool to have ci/cd somehow here
 
