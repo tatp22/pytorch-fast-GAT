@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="fast_gat",
-    version="0.1.0",
+    version="0.1.1",
     author="Peter Tatkowski",
     author_email="tatp22@gmail.com",
     description="A PyTorch implementation of Graph Attention Networks, with experimental speedup features.",
