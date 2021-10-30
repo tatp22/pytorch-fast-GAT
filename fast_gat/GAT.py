@@ -17,9 +17,10 @@ class GraphAttentionHead(nn.Module):
         nodes = self.w(nodes)
         new_nodes = nodes
         for curr_node, neighbors in edges.items():
-            neighbors.extend([curr_node]) # Don't forget self attention!
+            neighbors.add(curr_node) # Don't forget self attention!
             top_list = torch.tensor([self._get_top(nodes, curr_node, neighbor) for neighbor in neighbors])
             new_nodes[curr_node] = self._get_new_node_info(nodes, neighbors, top_list)
+            neighbors.discard(curr_node)
         return new_nodes
 
     def _get_top(self, nodes, i, j):

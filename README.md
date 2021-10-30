@@ -88,7 +88,6 @@ TODO
 ## Further work that needs to be done
 
 * Create some sort of downsampling/upsampling method
-* Optional: Create a test suite on every ci run? Could be cool to have ci/cd somehow here
 
 ## Citation
 
