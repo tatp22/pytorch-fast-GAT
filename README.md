@@ -9,7 +9,7 @@ which are found below.
 ## Installation
 
 ```
-pip install <NAME-TBA>
+pip install fast_gat
 ```
 
 Alternatively,
@@ -88,7 +88,6 @@ TODO
 ## Further work that needs to be done
 
 * Create some sort of downsampling/upsampling method
-* Figure out how to get this to pypi
 * Optional: Create a test suite on every ci run? Could be cool to have ci/cd somehow here
 
 ## Citation
