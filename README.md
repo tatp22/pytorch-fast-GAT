@@ -73,17 +73,11 @@ have already been processed such that the nodes are zero indexed.
 ## Downsampling method
 
 The main thing that I am experimenting with here is to somehow reduce the number of input vertices in the
-input graph while keeping the edges connected in a way that makes sense. Some things that might work:
+input graph while keeping the edges connected in a way that makes sense.
 
-* A learned iterative process; that is, some function `f: V x V -> V` that takes two nodes and makes it into one,
-run on the graph over several iterations. This could probably just be a single learned linear layer. The challenge
-here would be keeping the same procedure for upsampling, as well as preserving the edges somehow.
-* A fixed method related to the rank of each node. That is, lets say an edge connects `v_i` and `v_j`, then by some fixed
-rule, the two are joined and then split again.
-
-The learned iterative process looks more appealing; further work will be done to look into it.
-
-TODO
+Right now, I am looking into a learned iterative process; that is, some function `f: V x V -> V`
+that takes two nodes and makes it into one, run on the graph over several iterations. I have a
+method which looks promising and I will work on implementing the downsampling method; the upsampling is already done.
 
 ## Further work that needs to be done
 
