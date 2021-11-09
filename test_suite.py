@@ -1,5 +1,6 @@
+import copy
 import torch
-from fast_gat import DenseGraphAttentionNetwork, GraphAttentionNetwork, GraphUtils, NodeUpsampler
+from fast_gat import DenseGraphAttentionNetwork, GraphAttentionNetwork, GraphUtils, NodeDownsampler, NodeUpsampler
 
 num_nodes = 4
 nodes = torch.tensor([[0.1, 0.2, 0.3],
@@ -43,3 +44,9 @@ downsample_map = {0:0, 1:3}
 def test_upsampling():
     node_upsampler = NodeUpsampler(input_dim, num_downsampled_nodes)
     assert node_upsampler.upsample(downsampled_nodes, downsample_order, downsample_map).size() == (num_nodes, input_dim), "Error when upsampling"
+
+def test_downsampling():
+    node_downsampler = NodeDownsampler(input_dim, num_downsampled_nodes)
+    node_copy = copy.deepcopy(nodes)
+    down_nodes, down_edges = node_downsampler.downsample(nodes, sparse_edges)
+    assert torch.equal(node_copy, nodes), "Nodes were altered during the call"
