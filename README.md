@@ -72,16 +72,29 @@ have already been processed such that the nodes are zero indexed.
 
 ## Downsampling method
 
-The main thing that I am experimenting with here is to somehow reduce the number of input vertices in the
-input graph while keeping the edges connected in a way that makes sense.
+The first downsampling method that I came up with here takes advantage of the disjoint set data structure, in order
+to achieve downsampling in just O(nα(n)) time. This works as follows: until the graph is at the desired number of nodes,
+we take an edge u.a.r. from the graph, and use a global `nn.Linear` and run two nodes through it to get an output of one
+node, and we replace the starting node with this combination.
 
-Right now, I am looking into a learned iterative process; that is, some function `f: V x V -> V`
-that takes two nodes and makes it into one, run on the graph over several iterations. I have a
-method which looks promising and I will work on implementing the downsampling method; the upsampling is already done.
+In this method, the disjoint set data structure allows preserve our edges such that if nodes `i` and `j` were connected
+by a path of length `k` in the original graph `G`, at any point in the downsampling, for our graph `G'`, the nodes `i'`
+and `j'` (or whatever they were merged into) are still connected by a path of length `k' <= k`, and the information on
+their intermediate connections (if there were any) are stored in the single `nn.Linear` layer, all while keeping efficient
+time (less than n^2).
+
+In fact, this method may most likely be parallelizable (best case, O(log(n)α(n)), worst case still O(nα(n))), by choosing
+n/2 edges max each step such that each node would have max one edge that is considered and then running O(log(n)) steps
+of that downsampling, but for now I will just test the above method.
+
+The downsampling method returns the edges that were merged in order; this makes the upsampling easy, as we just run a
+reverse `nn.Linear` that upsamples it from 1 to 2 nodes.
+
+What's nice about this method is that it requires no assumptions on the graph structure.
 
 ## Further work that needs to be done
 
-* Create some sort of downsampling/upsampling method
+* Test this on a real life graph
 
 ## Citation
 
